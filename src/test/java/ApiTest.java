@@ -27,7 +27,7 @@ public class ApiTest {
     }
 
     @Test
-    public void testWeight() {
+    public void testWeightTK1() {
         given().contentType(ContentType.JSON)
                 .when().get("/pokemon/rattata")
                 .then().contentType(ContentType.JSON)
@@ -36,7 +36,7 @@ public class ApiTest {
     }
 
     @Test
-    public void testRattataAbility() {
+    public void testRattataAbilityTK2() {
         String url = "https://pokeapi.co/api/v2/pokemon/rattata";
         Response response = RestAssured.get(url);
         response.then().statusCode(200)
@@ -44,7 +44,7 @@ public class ApiTest {
     }
 
     @Test
-    public void testPokemonList() {
+    public void testPokemonListTK3() {
         RestAssured.baseURI = "https://pokeapi.co/api/v2";
         given().
                 queryParam("limit", 3).

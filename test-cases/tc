@@ -8,7 +8,7 @@
 ОР
 weight rattata < weight pidgeotto
 
-Проверка, что у покемона есть умение (ability) побег (run-away)
+Проверка, что у покемона есть умение (ability) побег (run-away)(TK-2)
 1. Отправить get-запрос https://pokeapi.co/api/v2/pokemon/pidgeotto
 2. Обратить внимание на параметр (ability) побег (run-away)
 
@@ -16,7 +16,7 @@ weight rattata < weight pidgeotto
 Есть (ability) побег (run-away)
 
 Проверка ограничения списка (limit) покемонов и то, что у каждого покемона в
-ограниченном списке есть имя
+ограниченном списке есть имя (TK-3)
 1. Отправить get-запрос https://pokeapi.co/api/v2/pokemon?limit=3&offset=0
 2. Обратить внимание на results
 
