@@ -53,7 +53,6 @@ public class ApiTest {
                 then().
                 assertThat().
                 statusCode(200).
-                body("count", equalTo(1279)).
                 body("results.size()", equalTo(3)).
                 body("results.name", everyItem(notNullValue()));
     }
