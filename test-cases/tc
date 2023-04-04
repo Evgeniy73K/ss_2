@@ -1,0 +1,24 @@
+Проверка, что у покемона rattata, в отличие от покемона pidgeotto параметр weight меньше(TK-1)
+1. Отправить get-запрос https://pokeapi.co/api/v2/pokemon/pidgeotto
+2. Обратить внимание на параметр weight(запомнить)
+3. Отправить get-запрос https://pokeapi.co/api/v2/pokemon/rattata
+4. Обратить внимание на параметр weight(запомнить)
+5. Сравнить weight rattata с weight pidgeotto
+
+ОР
+weight rattata < weight pidgeotto
+
+Проверка, что у покемона есть умение (ability) побег (run-away)
+1. Отправить get-запрос https://pokeapi.co/api/v2/pokemon/pidgeotto
+2. Обратить внимание на параметр (ability) побег (run-away)
+
+ОР
+Есть (ability) побег (run-away)
+
+Проверка ограничения списка (limit) покемонов и то, что у каждого покемона в
+ограниченном списке есть имя
+1. Отправить get-запрос https://pokeapi.co/api/v2/pokemon?limit=3&offset=0
+2. Обратить внимание на results
+
+ОР:
+есть 3 покемона, все имеют параметр name
