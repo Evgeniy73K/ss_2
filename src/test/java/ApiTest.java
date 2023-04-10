@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.notNullValue;
@@ -16,8 +17,10 @@ import static org.testng.Assert.assertTrue;
 
 public class ApiTest {
     private static final String  BASE_URL = "https://pokeapi.co/api/v2";
-    private static final  String END_POINT_POKEMON = "/pokemon";
-    Connect connect = new Connect(BASE_URL);
+    private static final  String END_POINT_POKEMON = "pokemon";
+    private static final  String PARAMS = "/?limit=3";
+    Connect connect = new Connect(BASE_URL, END_POINT_POKEMON);
+
     @BeforeTest
     public void setup() {
         RestAssured.baseURI = BASE_URL;
@@ -48,29 +51,25 @@ public class ApiTest {
                 .statusCode(200)
                 .extract()
                 .as(PokemonDTO.class);
-        boolean hasGutsAbility = rattata.getAbilities()
+        boolean hasAbilities = rattata.getAbilities()
                 .stream()
                 .map(PokemonDTO.AbilityDTO::getAbility)
                 .map(PokemonDTO.AbilityDTO.Ability::getName)
-                .anyMatch(name -> name.equals("guts"));
-        boolean hasRunAwayAbility = rattata.getAbilities()
-                .stream()
-                .map(PokemonDTO.AbilityDTO::getAbility)
-                .map(PokemonDTO.AbilityDTO.Ability::getName)
-                .anyMatch(name -> name.equals("run-away"));
-        assertTrue(hasGutsAbility && hasRunAwayAbility, "Не все спопсобности найдены");
+                .anyMatch(name -> name.equals("guts")) &&
+                rattata.getAbilities()
+                        .stream()
+                        .map(PokemonDTO.AbilityDTO::getAbility)
+                        .map(PokemonDTO.AbilityDTO.Ability::getName)
+                        .anyMatch(name -> name.equals("run-away"));
+        assertTrue(hasAbilities, "Не все способности найдены");
     }
 
     @Test
     public void testPokemonListTK3() {
-        given()
-                .queryParam("limit", 3)
-                .when()
-                .get(END_POINT_POKEMON)
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body("results.size()", equalTo(3))
-                .body("results.name", everyItem(notNullValue()));
+        Response response = connect.get(PARAMS);
+        List<String> pokemonNames = response.jsonPath().getList("results.name");
+        assertThat(response.getStatusCode(), equalTo(200));
+        assertThat(pokemonNames.size(), equalTo(3));
+        assertThat(pokemonNames, everyItem(notNullValue()));
     }
 }
