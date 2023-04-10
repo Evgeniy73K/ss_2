@@ -15,8 +15,9 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.testng.Assert.assertTrue;
 
 public class ApiTest {
-    private static final String BASE_URL = "https://pokeapi.co/api/v2";
-
+    private static final String  BASE_URL = "https://pokeapi.co/api/v2";
+    private static final  String END_POINT_POKEMON = "/pokemon";
+    Connect connect = new Connect(BASE_URL);
     @BeforeTest
     public void setup() {
         RestAssured.baseURI = BASE_URL;
@@ -24,26 +25,52 @@ public class ApiTest {
 
     @Test
     public void testWeightComparison() {
-        Response pidgeottoResponse = given().contentType(ContentType.JSON).when().get("/pokemon/pidgeotto");
-        Response rattataResponse = given().contentType(ContentType.JSON).when().get("/pokemon/rattata");
-        PokemonDTO pidgeotto = pidgeottoResponse.then().statusCode(200).extract().as(PokemonDTO.class);
-        PokemonDTO rattata = rattataResponse.then().statusCode(200).extract().as(PokemonDTO.class);
+        Response pidgeottoResponse = connect.getPokemonResponse("pidgeotto");
+        Response rattataResponse = connect.getPokemonResponse("rattata");
+        PokemonDTO pidgeotto = pidgeottoResponse
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(PokemonDTO.class);
+        PokemonDTO rattata = rattataResponse
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(PokemonDTO.class);
         assertTrue(rattata.getWeight() < pidgeotto.getWeight(), "Вес rattata > pidgeotto");
     }
 
-
     @Test
     public void testRattataAbilitiesTK2() {
-        Response rattataResponse = given().contentType(ContentType.JSON).when().get("/pokemon/rattata");
-        PokemonDTO rattata = rattataResponse.then().statusCode(200).extract().as(PokemonDTO.class);
-        boolean hasGutsAbility = rattata.getAbilities().stream().map(PokemonDTO.AbilityDTO::getAbility).map(PokemonDTO.AbilityDTO.Ability::getName).anyMatch(name -> name.equals("guts"));
-        boolean hasRunAwayAbility = rattata.getAbilities().stream().map(PokemonDTO.AbilityDTO::getAbility).map(PokemonDTO.AbilityDTO.Ability::getName).anyMatch(name -> name.equals("guts"));
+        Response rattataResponse = connect.getPokemonResponse("rattata");
+        PokemonDTO rattata = rattataResponse
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(PokemonDTO.class);
+        boolean hasGutsAbility = rattata.getAbilities()
+                .stream()
+                .map(PokemonDTO.AbilityDTO::getAbility)
+                .map(PokemonDTO.AbilityDTO.Ability::getName)
+                .anyMatch(name -> name.equals("guts"));
+        boolean hasRunAwayAbility = rattata.getAbilities()
+                .stream()
+                .map(PokemonDTO.AbilityDTO::getAbility)
+                .map(PokemonDTO.AbilityDTO.Ability::getName)
+                .anyMatch(name -> name.equals("run-away"));
         assertTrue(hasGutsAbility && hasRunAwayAbility, "Не все спопсобности найдены");
     }
 
-
     @Test
     public void testPokemonListTK3() {
-        given().queryParam("limit", 3).when().get("/pokemon").then().assertThat().statusCode(200).body("results.size()", equalTo(3)).body("results.name", everyItem(notNullValue()));
+        given()
+                .queryParam("limit", 3)
+                .when()
+                .get(END_POINT_POKEMON)
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .body("results.size()", equalTo(3))
+                .body("results.name", everyItem(notNullValue()));
     }
 }
